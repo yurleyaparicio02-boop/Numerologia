@@ -14,6 +14,8 @@ import registroAuditoriaRoutes from "./routes/registroAuditoria.routes.js";
 
 cnxMongoDB();
 
+console.log("MONGO_URI:", process.env.MONGO_URI); // <-- línea nueva, temporal
+
 const numerologia = express();
 
 numerologia.use(express.json());

@@ -36,7 +36,13 @@ export const obtenerRegistroAuditoria = async (req, res) => {
 
 export const crearRegistroAuditoria = async (req, res) => {
     try {
-        const registro = new RegistroAuditoria(req.body);
+        const registro = new RegistroAuditoria({
+            endpoint: req.body.endpoint,
+            metodo: req.body.metodo,
+            statusCode: req.body.statusCode,
+            usuario_id: req.body.usuario_id
+        });
+
         await registro.save();
 
         res.status(201).json(registro);
@@ -50,9 +56,16 @@ export const crearRegistroAuditoria = async (req, res) => {
 
 export const actualizarRegistroAuditoria = async (req, res) => {
     try {
+        const datosActualizados = {
+            endpoint: req.body.endpoint,
+            metodo: req.body.metodo,
+            statusCode: req.body.statusCode,
+            usuario_id: req.body.usuario_id
+        };
+
         const registro = await RegistroAuditoria.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            datosActualizados,
             { new: true }
         );
 

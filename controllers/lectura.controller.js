@@ -36,7 +36,13 @@ export const obtenerLectura = async (req, res) => {
 
 export const crearLectura = async (req, res) => {
     try {
-        const lectura = new Lectura(req.body);
+        const lectura = new Lectura({
+            usuario_id: req.body.usuario_id,
+            prompt: req.body.prompt,
+            respuesta: req.body.respuesta,
+            tipoLectura: req.body.tipoLectura
+        });
+
         await lectura.save();
 
         res.status(201).json(lectura);
@@ -50,9 +56,16 @@ export const crearLectura = async (req, res) => {
 
 export const actualizarLectura = async (req, res) => {
     try {
+        const datosActualizados = {
+            usuario_id: req.body.usuario_id,
+            prompt: req.body.prompt,
+            respuesta: req.body.respuesta,
+            tipoLectura: req.body.tipoLectura
+        };
+
         const lectura = await Lectura.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            datosActualizados,
             { new: true }
         );
 

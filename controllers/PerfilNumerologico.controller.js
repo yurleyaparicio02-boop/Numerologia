@@ -36,7 +36,13 @@ export const obtenerPerfil = async (req, res) => {
 
 export const crearPerfil = async (req, res) => {
     try {
-        const perfil = new PerfilNumerologico(req.body);
+        const perfil = new PerfilNumerologico({
+            usuario_id: req.body.usuario_id,
+            numeroVida: req.body.numeroVida,
+            numeroExpresion: req.body.numeroExpresion,
+            numeroAlma: req.body.numeroAlma
+        });
+
         await perfil.save();
 
         res.status(201).json(perfil);
@@ -50,9 +56,16 @@ export const crearPerfil = async (req, res) => {
 
 export const actualizarPerfil = async (req, res) => {
     try {
+        const datosActualizados = {
+            usuario_id: req.body.usuario_id,
+            numeroVida: req.body.numeroVida,
+            numeroExpresion: req.body.numeroExpresion,
+            numeroAlma: req.body.numeroAlma
+        };
+
         const perfil = await PerfilNumerologico.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            datosActualizados,
             { new: true }
         );
 

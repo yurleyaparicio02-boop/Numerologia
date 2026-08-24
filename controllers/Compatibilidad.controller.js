@@ -38,7 +38,13 @@ export const obtenerCompatibilidad = async (req, res) => {
 
 export const crearCompatibilidad = async (req, res) => {
     try {
-        const compatibilidad = new Compatibilidad(req.body);
+        const compatibilidad = new Compatibilidad({
+            usuario1_id: req.body.usuario1_id,
+            usuario2_id: req.body.usuario2_id,
+            puntaje: req.body.puntaje,
+            interpretacionIA: req.body.interpretacionIA
+        });
+
         await compatibilidad.save();
 
         res.status(201).json(compatibilidad);
@@ -52,9 +58,16 @@ export const crearCompatibilidad = async (req, res) => {
 
 export const actualizarCompatibilidad = async (req, res) => {
     try {
+        const datosActualizados = {
+            usuario1_id: req.body.usuario1_id,
+            usuario2_id: req.body.usuario2_id,
+            puntaje: req.body.puntaje,
+            interpretacionIA: req.body.interpretacionIA
+        };
+
         const compatibilidad = await Compatibilidad.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            datosActualizados,
             { new: true }
         );
 

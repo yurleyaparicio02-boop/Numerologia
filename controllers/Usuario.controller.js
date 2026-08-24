@@ -3,6 +3,7 @@ import Usuario from "../models/Usuario.model.js";
 export const obtenerUsuarios = async (req, res) => {
     try {
         const usuarios = await Usuario.find();
+
         res.json(usuarios);
     } catch (error) {
         res.status(500).json({
@@ -33,7 +34,13 @@ export const obtenerUsuario = async (req, res) => {
 
 export const crearUsuario = async (req, res) => {
     try {
-        const usuario = new Usuario(req.body);
+        const usuario = new Usuario({
+            nombreCompleto: req.body.nombreCompleto,
+            email: req.body.email,
+            passwordHash: req.body.passwordHash,
+            fechaNacimiento: req.body.fechaNacimiento
+        });
+
         await usuario.save();
 
         res.status(201).json(usuario);
@@ -47,9 +54,15 @@ export const crearUsuario = async (req, res) => {
 
 export const actualizarUsuario = async (req, res) => {
     try {
+        const datosActualizados = {
+            nombreCompleto: req.body.nombreCompleto,
+            email: req.body.email,
+            fechaNacimiento: req.body.fechaNacimiento
+        };
+
         const usuario = await Usuario.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            datosActualizados,
             { new: true }
         );
 

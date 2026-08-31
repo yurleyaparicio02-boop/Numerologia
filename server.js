@@ -11,6 +11,7 @@ import perfilNumerologicoRoutes from "./routes/perfilNumerologico.routes.js";
 import lecturaRoutes from "./routes/lectura.routes.js";
 import compatibilidadRoutes from "./routes/compatibilidad.routes.js";
 import registroAuditoriaRoutes from "./routes/registroAuditoria.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 
 cnxMongoDB();
 
@@ -23,7 +24,12 @@ numerologia.use("/api/perfiles-numerologicos", perfilNumerologicoRoutes);
 numerologia.use("/api/lecturas", lecturaRoutes);
 numerologia.use("/api/compatibilidades", compatibilidadRoutes);
 numerologia.use("/api/registros-auditoria", registroAuditoriaRoutes);
+numerologia.use("/api/auth", authRoutes);
 
+
+
+
+console.log(`Servidor funciona`);
 numerologia.listen(process.env.PORT, () => {
     console.log(`Servidor: http://localhost:${process.env.PORT}`);
 });

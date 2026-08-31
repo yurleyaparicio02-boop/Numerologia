@@ -1,19 +1,59 @@
-import express from "express";
+import { Router } from "express";
 
 import {
+    crearUsuario,
     obtenerUsuarios,
     obtenerUsuario,
-    crearUsuario,
     actualizarUsuario,
     eliminarUsuario
-} from "../controllers/usuario.controller.js";
+} from "../controllers/Usuario.controller.js";
 
-const router = express.Router();
+import {
+    crearUsuarioValidator,
+    actualizarUsuarioValidator,
+    idValidator
+} from "../validators/usuario.validator.js";
 
-router.get("/", obtenerUsuarios);
-router.get("/:id", obtenerUsuario);
-router.post("/", crearUsuario);
-router.put("/:id", actualizarUsuario);
-router.delete("/:id", eliminarUsuario);
+import { validarCampos } from "../middlewares/validarCampos.js";
+
+const router = Router();
+
+// CREAR
+router.post(
+    "/",
+    crearUsuarioValidator,
+    validarCampos,
+    crearUsuario
+);
+
+// LISTAR
+router.get(
+    "/",
+    obtenerUsuarios
+);
+
+// OBTENER POR ID
+router.get(
+    "/:id",
+    idValidator,
+    validarCampos,
+    obtenerUsuario
+);
+
+// ACTUALIZAR
+router.put(
+    "/:id",
+    [...idValidator, ...actualizarUsuarioValidator],
+    validarCampos,
+    actualizarUsuario
+);
+
+// ELIMINAR
+router.delete(
+    "/:id",
+    idValidator,
+    validarCampos,
+    eliminarUsuario
+);
 
 export default router;

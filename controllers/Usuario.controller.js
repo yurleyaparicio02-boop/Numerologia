@@ -1,18 +1,53 @@
 import Usuario from "../models/Usuario.model.js";
+import bcrypt from "bcrypt";
 
-export const obtenerUsuarios = async (req, res) => {
+// CREAR USUARIO
+export const crearUsuario = async (req, res) => {
     try {
-        const usuarios = await Usuario.find();
+        const {
+            nombreCompleto,
+            email,
+            passwordHash,
+            fechaNacimiento
+        } = req.body;
 
-        res.json(usuarios);
+        const passwordEncriptada = await bcrypt.hash(passwordHash, 10);
+
+        const usuario = await Usuario.create({
+            nombreCompleto,
+            email,
+            passwordHash: passwordEncriptada,
+            fechaNacimiento
+        });
+
+        res.status(201).json(usuario);
+
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al obtener los usuarios",
+        res.status(400).json({
+            mensaje: "Error al crear usuario",
             error: error.message
         });
     }
 };
 
+
+// LISTAR USUARIOS
+export const obtenerUsuarios = async (req, res) => {
+    try {
+        const usuarios = await Usuario.find();
+
+        res.status(200).json(usuarios);
+
+    } catch (error) {
+        res.status(500).json({
+            mensaje: "Error al listar usuarios",
+            error: error.message
+        });
+    }
+};
+
+
+// OBTENER USUARIO POR ID
 export const obtenerUsuario = async (req, res) => {
     try {
         const usuario = await Usuario.findById(req.params.id);
@@ -23,47 +58,37 @@ export const obtenerUsuario = async (req, res) => {
             });
         }
 
-        res.json(usuario);
+        res.status(200).json(usuario);
+
     } catch (error) {
         res.status(500).json({
-            mensaje: "Error al obtener el usuario",
+            mensaje: "Error al obtener usuario",
             error: error.message
         });
     }
 };
 
-export const crearUsuario = async (req, res) => {
-    try {
-        const usuario = new Usuario({
-            nombreCompleto: req.body.nombreCompleto,
-            email: req.body.email,
-            passwordHash: req.body.passwordHash,
-            fechaNacimiento: req.body.fechaNacimiento
-        });
 
-        await usuario.save();
-
-        res.status(201).json(usuario);
-    } catch (error) {
-        res.status(400).json({
-            mensaje: "Error al crear el usuario",
-            error: error.message
-        });
-    }
-};
-
+// ACTUALIZAR USUARIO
 export const actualizarUsuario = async (req, res) => {
     try {
-        const datosActualizados = {
-            nombreCompleto: req.body.nombreCompleto,
-            email: req.body.email,
-            fechaNacimiento: req.body.fechaNacimiento
-        };
+        const {
+            nombreCompleto,
+            email,
+            fechaNacimiento
+        } = req.body;
 
         const usuario = await Usuario.findByIdAndUpdate(
             req.params.id,
-            datosActualizados,
-            { new: true }
+            {
+                nombreCompleto,
+                email,
+                fechaNacimiento
+            },
+            {
+                new: true,
+                runValidators: true
+            }
         );
 
         if (!usuario) {
@@ -72,15 +97,18 @@ export const actualizarUsuario = async (req, res) => {
             });
         }
 
-        res.json(usuario);
+        res.status(200).json(usuario);
+
     } catch (error) {
         res.status(400).json({
-            mensaje: "Error al actualizar el usuario",
+            mensaje: "Error al actualizar usuario",
             error: error.message
         });
     }
 };
 
+
+// ELIMINAR USUARIO
 export const eliminarUsuario = async (req, res) => {
     try {
         const usuario = await Usuario.findByIdAndDelete(req.params.id);
@@ -91,12 +119,13 @@ export const eliminarUsuario = async (req, res) => {
             });
         }
 
-        res.json({
+        res.status(200).json({
             mensaje: "Usuario eliminado correctamente"
         });
+
     } catch (error) {
         res.status(500).json({
-            mensaje: "Error al eliminar el usuario",
+            mensaje: "Error al eliminar usuario",
             error: error.message
         });
     }

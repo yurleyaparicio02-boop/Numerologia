@@ -2,11 +2,11 @@ import { validationResult } from "express-validator";
 
 export const validarCampos = (req, res, next) => {
 
-    console.log("🔥 ENTRÓ A validarCampos");
+    console.log(" ENTRÓ A validarCampos");
 
     const errores = validationResult(req);
 
-    console.log("🔥 ERRORES:", errores.array());
+    console.log("ERRORES:", errores.array());
 
     if (!errores.isEmpty()) {
         return res.status(400).json({
